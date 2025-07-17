@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo Installing dependencies...
+      - npm ci
+
+  build:
+    commands:
+      - echo Building the frontend app...
+      - npm run build
+
+  post_build:
+    commands:
+      - echo Deploying to S3...
+      - aws s3 sync build/ s3://$S3_BUCKET_NAME/ --delete
+      - echo Deployment complete.
+
+artifacts:
+  files:
+    - "**/*"
+  base-directory: build
